@@ -77,7 +77,6 @@ target/
 
 # exclude data from source control by default
 /data/
-/examples/
 
 # Mac OS-specific storage files
 .DS_Store
@@ -88,3 +87,5 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+mlruns
