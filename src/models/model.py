@@ -1,21 +1,6 @@
 import pandas as pd
 import numpy as np
-import sklearn
-import logging
-import warnings
-logging.basicConfig(level=logging.WARN)
-logger = logging.getLogger(__name__)
-
-
-# Train Test split
-from sklearn.model_selection import train_test_split
-print("Splitting NEARMISS : ")
-train_nm_features, \
-test_nm_features, \
-train_nm_labels, \
-test_nm_labels=train_test_split(nm_features,nm_labels,test_size=0.2,random_state=1)
-print(train_nm_features.shape, train_nm_labels.shape, test_nm_features.shape, test_nm_labels.shape)
-
+# SKlearn model
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import PassiveAggressiveClassifier
 from sklearn.linear_model import RidgeClassifier
@@ -38,8 +23,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from catboost import Pool, CatBoostClassifier, cv
 import lightgbm as lgb
 import xgboost as xgb
-
-
+# Evaluation metrics
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.metrics import average_precision_score
@@ -47,23 +31,24 @@ from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import matthews_corrcoef
-
-# for short in time,and resources, NearMiss undersampling data is taken
-def train_nm_dataset():
-    i = 1
-    Model_scores = {} #Model = Socre
-    for Model_Name, classifier in Models.items():
-        print(f"{i}. {Model_Name}")
-        classifier.fit(train_nm_features, train_nm_labels)
-        score = calculate_nm_score(classifier=classifier)
-        i = i+1
-        print(f"{score}")
-        print("________________________________________")
-        Model_scores[Model_Name] = score
-    return Model_scores
-
+# MLflow
 import mlflow
 import mlflow.sklearn
+# others
+import logging
+import warnings
+logging.basicConfig(level=logging.WARN)
+logger = logging.getLogger(__name__)
+
+#oversampling train/test path
+oversampling_train_data_path = config["processed_data_config"]["oversampling_train_data_csv"]
+oversampling_test_data_path = config["processed_data_config"]["oversampling_test_data_csv"]
+#undersampling train/test path
+undersampling_train_data_path = config["processed_data_config"]["undersampling_train_data_csv"]
+undersampling_test_data_path = config["processed_data_config"]["undersampling_test_data_csv"]
+#train/test config
+split_ratio = config["train_test_config"]["train_test_split_ratio"]
+random_state = config["train_test_config"]["random_state"]
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
