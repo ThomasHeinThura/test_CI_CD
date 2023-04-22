@@ -7,19 +7,24 @@ from sklearn.model_selection import train_test_split
 import argparse
 import pandas as pd
 from params_loader import read_params
+from data_function import get_feat_and_target, change_to_pandas
+
+
 
 # function to output undersampling csv 
-def undersampling_dataset(clean_dataset, undersampling_data_path):
+def undersampling_dataset(clean_dataset, undersampling_data_path, target):
     """
     undersampling the dataset
     """
-    scaled_X,transform_y = clean_dataset
+    scaled_X,y_transformed = get_feat_and_target(clean_dataset, target)
     # Create an instance of NearMiss
     nm = NearMiss()
     # Fit and apply NearMiss to downsample the majority class
+    print("Undersampling by NearMiss")
     nm_features, nm_labels = nm.fit_resample(scaled_X, y_transformed)
-    undersampling_data = (nm_features, nm_labels)
-    undersampling_data.to_csv(train_data_path, sep=",", index=False, encoding="utf-8")
+    undersampling_data = change_to_pandas(clean_dataset, nm_features, nm_labels, target)
+    print("Saving as CSV")
+    undersampling_data.to_csv(undersampling_data_path, sep=",", index=False, encoding="utf-8")
     
     
 def undersampling_and_saved_data(config_path):
@@ -34,12 +39,16 @@ def undersampling_and_saved_data(config_path):
     clean_data_path = config["clean_data_config"]["clean_data_csv"]
     #sampling path
     undersampling_data_path = config["sampling_data_config"]["undersampling_data_csv"] 
+    target = config["train_test_config"]["target"]
     
     # Read data from clean dataset
     clean_dataset =pd.read_csv(clean_data_path)
     
     undersampling_dataset(clean_dataset,
-                         undersampling_data_path)
+                         undersampling_data_path,
+                         target)
+    
+    print("Finish")
     
 if __name__=="__main__":
     args = argparse.ArgumentParser()

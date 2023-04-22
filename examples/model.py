@@ -7,11 +7,6 @@ logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
 
-
-
-
-
-
 # Train Test split
 from sklearn.model_selection import train_test_split
 print("Splitting NEARMISS : ")
