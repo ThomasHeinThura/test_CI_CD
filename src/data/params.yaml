@@ -1,24 +1,24 @@
 
 # orignal dataset
 raw_data_config:
-  raw_data_csv: ../data/raw/creditcard.csv
+  raw_data_csv: ../../data/raw/creditcard.csv
 
 # clean dataset
 clean_data_config: 
-  clean_data_csv: ../data/clean/clean_creditcard.csv
+  clean_data_csv: ../../data/clean/clean_creditcard.csv
 
 # sampling dataset
 # oversampling and undersampling
 sampling_data_config:
-  overampling_data_csv: ../data/sampling/oversampling.csv
-  undersampling_data_csv:  ../data/sampling/undersampling.csv
+  overampling_data_csv: ../../data/sampling/oversampling.csv
+  undersampling_data_csv:  ../../data/sampling/undersampling.csv
 
 # Train_test processing data
 processed_data_config:
-  oversampling_train_data_csv: ../data/processed/oversampling_train.csv
-  oversampling_test_data_csv:  ../data/processed/oversampling_test.csv
-  undersampling_train_data_csv: ../data/processed/undersampling_train.csv
-  undersampling_test_data_csv:  ../data/processed/undersampling_test.csv
+  oversampling_train_data_csv: ../../data/processed/oversampling_train.csv
+  oversampling_test_data_csv:  ../../data/processed/oversampling_test.csv
+  undersampling_train_data_csv: ../../data/processed/undersampling_train.csv
+  undersampling_test_data_csv:  ../../data/processed/undersampling_test.csv
 
 train_test_config:
   train_test_split_ratio: 0.2
