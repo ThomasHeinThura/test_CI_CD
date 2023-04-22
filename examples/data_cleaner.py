@@ -11,6 +11,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn import preprocessing
 from params_loader import read_params
+from data_function import get_feat_and_target, change_to_pandas
 
 
 def load_data(data_path):
@@ -59,18 +60,6 @@ def powertransform_skewness(raw_dataset):
     pt=PowerTransformer(standardize=False)
     raw_dataset[skewed_col_nm]=pt.fit_transform(raw_dataset[skewed_col_nm])
 # ------------------------------------------------------------------------------- #
-def get_feat_and_target(raw_dataset,target):
-    """
-    Get features and target variables seperately from given dataframe and target 
-    input: dataframe and target column
-    output: two dataframes for x and y 
-    """
-    powertransform_dataset = powertransform_skewness(raw_dataset)
-    X=raw_dataset.drop(target,axis=1)
-    y=raw_dataset[target]
-    print("spliiting X and y")
-    return X,y   
-
 def standardize_feature_labels(raw_dataset,target):
     X,y = get_feat_and_target(raw_dataset, target)
     #Normalize features
@@ -82,18 +71,6 @@ def standardize_feature_labels(raw_dataset,target):
     y_transformed = lab.fit_transform(y)
     return scaled_X, y_transformed
 # ------------------------------------------------------------------------------- #
-def change_to_pandas(raw_dataset,scaled_X, y_transformed, target):
-    # change feature to pandas
-    print("Reframe to Pandas")
-    data_columns = raw_dataset.drop(target,axis=1)
-    scaled_X = pd.DataFrame(scaled_X, columns=data_columns.columns)
-    # change labels to pandas
-    y_transformed = pd.DataFrame(y_transformed)
-    y_transformed.columns = ['Class']
-    # zip two dataset.
-    clean_dataset =pd.concat([scaled_X, y_transformed],ignore_index=False,axis=1,sort=False)
-    return clean_dataset
-
 def save_clean_data(raw_dataset,target, clean_data_path):
     scaled_X, y_transformed = standardize_feature_labels(raw_dataset, target)
     #clean raw dataset and save clean data
