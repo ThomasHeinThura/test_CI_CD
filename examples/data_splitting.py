@@ -29,20 +29,25 @@ def split_sampling_and_saved_data(config_path):
     random_state = config["train_test_config"]["random_state"]
     
     # Read data from sampling
+    print("Loading dataset")
     oversampling_dataset=pd.read_csv(oversampling_data_path)
     undersampling_dataset = pd.read_csv(undersampling_data_path)
     
+    print("Start splitting oversampling dataset")
     split_data(oversampling_dataset,
                oversampling_train_data_path,
                oversampling_test_data_path,
                split_ratio,
                random_state)
     
+    print("Start splitting undersampling dataset")
     split_data(undersampling_dataset,
                undersampling_train_data_path,
                undersampling_test_data_path,
                split_ratio,
                random_state)
+    
+    print("Finish all processes")
     
 if __name__=="__main__":
     args = argparse.ArgumentParser()
