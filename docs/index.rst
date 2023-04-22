@@ -1,9 +1,9 @@
-.. test_CI_CD documentation master file, created by
+.. fraud_test_CI_CD_1 documentation master file, created by
    sphinx-quickstart.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-test_CI_CD documentation!
+fraud_test_CI_CD_1 documentation!
 ==============================================
 
 Contents:

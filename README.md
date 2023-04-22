@@ -1,7 +1,7 @@
-test_CI_CD
+fraud_test_CI_CD_1
 ==============================
 
-testing CI CD pipline
+testing ci cd
 
 Project Organization
 ------------
@@ -55,4 +55,3 @@ Project Organization
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
-# test_CI_CD

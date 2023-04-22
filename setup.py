@@ -4,7 +4,7 @@ setup(
     name='src',
     packages=find_packages(),
     version='0.1.0',
-    description='testing CI CD pipline',
+    description='testing ci cd',
     author='ThomasHeinThura',
     license='',
 )
