@@ -1,18 +1,3 @@
-
-# orignal dataset
-raw_data_config:
-  raw_data_csv: ../../data/raw/creditcard.csv
-
-# clean dataset
-clean_data_config: 
-  clean_data_csv: ../../data/clean/clean_creditcard.csv
-
-# sampling dataset
-# oversampling and undersampling
-sampling_data_config:
-  overampling_data_csv: ../../data/sampling/oversampling.csv
-  undersampling_data_csv:  ../../data/sampling/undersampling.csv
-
 # Train_test processing data
 processed_data_config:
   oversampling_train_data_csv: ../../data/processed/oversampling_train.csv
