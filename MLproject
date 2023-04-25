@@ -4,8 +4,4 @@ python_env: python_env.yaml
 
 entry_points:
   main:
-    parameters:
-      Sampling: {type: string, default: 'undersampling'}
-    command: | 
-        python main.py \
-          --sampling={sampling}
+    command: "python main.py --sampling undersampling"
