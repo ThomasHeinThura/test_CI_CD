@@ -25,34 +25,87 @@ import lightgbm as lgb
 import xgboost as xgb
 # Evaluation metrics
 from sklearn.metrics import accuracy_score
-from sklearn.metrics import balanced_accuracy_score
-from sklearn.metrics import average_precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
-from sklearn.metrics import roc_auc_score
-from sklearn.metrics import matthews_corrcoef
+from sklearn.metrics import precision_score,confusion_matrix,classification_report
 # MLflow
 import mlflow
 import mlflow.sklearn
 # others
+import json
+import yaml
+import joblib
+import argparse
+from urllib.parse import urlparse
 import logging
 import warnings
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
-#oversampling train/test path
-oversampling_train_data_path = config["processed_data_config"]["oversampling_train_data_csv"]
-oversampling_test_data_path = config["processed_data_config"]["oversampling_test_data_csv"]
-#undersampling train/test path
-undersampling_train_data_path = config["processed_data_config"]["undersampling_train_data_csv"]
-undersampling_test_data_path = config["processed_data_config"]["undersampling_test_data_csv"]
-#train/test config
-split_ratio = config["train_test_config"]["train_test_split_ratio"]
-random_state = config["train_test_config"]["random_state"]
+import sys
+# caution: path[0] is reserved for script path (or '' in REPL)
+sys.path.insert(1, '../data/')
+from data_function import get_feat_and_target
+from params_loader import read_params
+warnings.filterwarnings("ignore")
+np.random.seed(40)
+
+def accuracymeasure(test_labels, predictions, avg_method):
+    base_score   = classifier.score(test_nm_features,test_labels)
+    accuracy = accuracy_score(test_labels, predictions)
+    precision = precision_score(test_labels, predictions, average=avg_method)
+    recall = recall_score(test_labels, predictions, average=avg_method)
+    f1score = f1_score(test_labels, predictions, average=avg_method)
+    target_names = ['0','1']
+    print("Classification report")
+    print("---------------------","\n")
+    print(classification_report(test_labels, predictions,target_names=target_names),"\n")
+    print("Confusion Matrix")
+    print("---------------------","\n")
+    print(confusion_matrix(test_labels, predictions),"\n")
+
+    print("Accuracy Measures")
+    print("---------------------","\n")
+    print("Base score: ", base_score)
+    print("Accuracy: ", accuracy)
+    print("Precision: ", precision)
+    print("Recall: ", recall)
+    print("F1 Score: ", f1score)
+
+    return base_score,accuracy,precision,recall,f1score
+
+def features_labels_split(train_data_path, test_data_path, target):
+    train_dataset = pd.read_csv(train_data_path, sep=",")
+    test_dataset = pd.read_csv(test_data_path, sep=",")
+    train_features,train_label = get_feat_and_target(train_dataset, target)
+    test_features,test_label = get_feat_and_target(test_dataset, target)
+    return train_features, train_label, test_features, test_label
+
+
+def train_and_evaluate(config_path):
+    config = read_params(config_path)
+    
+    #oversampling train/test path
+    oversampling_train_data_path = config["processed_data_config"]["oversampling_train_data_csv"]
+    oversampling_test_data_path = config["processed_data_config"]["oversampling_test_data_csv"]
+    
+    #undersampling train/test path
+    undersampling_train_data_path = config["processed_data_config"]["undersampling_train_data_csv"]
+    undersampling_test_data_path = config["processed_data_config"]["undersampling_test_data_csv"]
+    
+    #train/test config
+    split_ratio = config["train_test_config"]["train_test_split_ratio"]
+    random_state = config["train_test_config"]["random_state"]
+    target = config["train_test_config"]["target"]
+    
+    
+    train_features, train_label, test_features, test_label = features_labels_split(train_data_path, test_data_path, target)
+
+
+
 
 if __name__ == "__main__":
-    warnings.filterwarnings("ignore")
-    np.random.seed(40)
+
     with mlflow.start_run():
         # Model
         #Building Model Dict
@@ -86,14 +139,14 @@ if __name__ == "__main__":
             # make prediction
             predictions   = classifier.predict(test_nm_features)
             
+
+            
+            
+            
             # calculate values
-            base_score   = classifier.score(test_nm_features,test_nm_labels)
-            accuracy     = accuracy_score(test_nm_labels, predictions)
-            acc_bal      = balanced_accuracy_score(test_nm_labels, predictions)
-            av_precision = average_precision_score(test_nm_labels, predictions)
-            recall       = recall_score(test_nm_labels, predictions)#Set df_used to the fraudulent transactions' dataset.
-            f1           = f1_score(test_nm_labels, predictions)
-            mcc          = matthews_corrcoef(test_nm_labels, predictions)
+            
+            
+            
             score = {
                 "base_score"     : round(base_score,3),
                 "accuary"        : round(accuracy,3),
@@ -118,7 +171,54 @@ if __name__ == "__main__":
             print("________________________________________")
         
         
-    
+     
+
+
+
+################### MLFLOW ###############################
+    mlflow_config = config["mlflow_config"]
+    remote_server_uri = mlflow_config["remote_server_uri"]
+
+    mlflow.set_tracking_uri(remote_server_uri)
+    mlflow.set_experiment(mlflow_config["experiment_name"])
+
+    with mlflow.start_run(run_name=mlflow_config["run_name"]) as mlops_run:
+        model = RandomForestClassifier(max_depth=max_depth,n_estimators=n_estimators)
+        model.fit(train_x, train_y)
+        y_pred = model.predict(test_x)
+        accuracy,precision,recall,f1score = accuracymeasures(test_y,y_pred,'weighted')
+
+        mlflow.log_param("max_depth",max_depth)
+        mlflow.log_param("n_estimators", n_estimators)
+
+        mlflow.log_metric("accuracy", accuracy)
+        mlflow.log_metric("precision", precision)
+        mlflow.log_metric("recall", recall)
+        mlflow.log_metric("f1_score", f1score)
+       
+        tracking_url_type_store = urlparse(mlflow.get_artifact_uri()).scheme
+
+        if tracking_url_type_store != "file":
+            mlflow.sklearn.log_model(
+                model, 
+                "model", 
+                registered_model_name=mlflow_config["registered_model_name"])
+        else:
+            mlflow.sklearn.load_model(model, "model")
+ 
+if __name__=="__main__":
+    args = argparse.ArgumentParser()
+    args.add_argument("--config", default="model_params.yaml")
+    parsed_args = args.parse_args()
+    train_and_evaluate(config_path=parsed_args.config)
+
+
+
+
+
+
+
+
 
 ### Add lgb, catboost and Stacking and ANN
 

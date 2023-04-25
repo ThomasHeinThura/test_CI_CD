@@ -76,7 +76,7 @@ def save_clean_data(raw_dataset,target, clean_data_path):
     #clean raw dataset and save clean data
     clean_dataset = change_to_pandas(raw_dataset, scaled_X, y_transformed, target)
     print("Finish cleaning and save to path.")
-    clean_dataset.to_csv(clean_data_path,index=False)
+    clean_dataset.to_parquet(clean_data_path,index=False)
 
 def clean_raw_data(config_path):
     """
@@ -93,13 +93,13 @@ def clean_raw_data(config_path):
     
     # load data
     creditcard_df=load_data(raw_data_path)
-    print("START CLEANING")
+    print("START CLEANING RAW DATA")
     save_clean_data(creditcard_df, target, clean_data_path)
     print("Finish all processes")
 
     
-if __name__ == "__main__":
-    args = argparse.ArgumentParser()
-    args.add_argument("--config", default="params.yaml")
-    parsed_args = args.parse_args()
-    clean_raw_data(config_path=parsed_args.config)
+# if __name__ == "__main__":
+#     args = argparse.ArgumentParser()
+#     args.add_argument("--config", default="params.yaml")
+#     parsed_args = args.parse_args()
+#     clean_raw_data(config_path=parsed_args.config)

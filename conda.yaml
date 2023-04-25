@@ -1,0 +1,14 @@
+name: tutorial
+
+channels:
+  - default
+  - conda-forge
+dependencies:
+  - python=3.8
+  - pip
+  - pip:
+      - scikit-learn
+      - mlflow
+      - pandas
+      - xgboost
+      - imblearn

@@ -11,7 +11,7 @@ from data_function import get_feat_and_target, change_to_pandas
 
 
 
-# function to output undersampling csv 
+# function to output undersampling parquet
 def undersampling_dataset(clean_dataset, undersampling_data_path, target):
     """
     undersampling the dataset
@@ -23,8 +23,8 @@ def undersampling_dataset(clean_dataset, undersampling_data_path, target):
     print("Undersampling by NearMiss")
     nm_features, nm_labels = nm.fit_resample(scaled_X, y_transformed)
     undersampling_data = change_to_pandas(clean_dataset, nm_features, nm_labels, target)
-    print("Saving as CSV")
-    undersampling_data.to_csv(undersampling_data_path, sep=",", index=False, encoding="utf-8")
+    print("Saving as Parquet")
+    undersampling_data.to_parquet(undersampling_data_path, index=False)
     
     
 def undersampling_and_saved_data(config_path):
@@ -42,7 +42,7 @@ def undersampling_and_saved_data(config_path):
     target = config["train_test_config"]["target"]
     
     # Read data from clean dataset
-    clean_dataset =pd.read_csv(clean_data_path)
+    clean_dataset =pd.read_parquet(clean_data_path)
     
     undersampling_dataset(clean_dataset,
                          undersampling_data_path,
@@ -50,11 +50,11 @@ def undersampling_and_saved_data(config_path):
     
     print("Finish")
     
-if __name__=="__main__":
-    args = argparse.ArgumentParser()
-    args.add_argument("--config", default="params.yaml")
-    parsed_args = args.parse_args()
-    undersampling_and_saved_data(config_path=parsed_args.config)
+# if __name__=="__main__":
+#     args = argparse.ArgumentParser()
+#     args.add_argument("--config", default="params.yaml")
+#     parsed_args = args.parse_args()
+#     undersampling_and_saved_data(config_path=parsed_args.config)
     
 
 
