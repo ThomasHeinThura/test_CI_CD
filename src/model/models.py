@@ -45,7 +45,7 @@ def build_and_load_models():
         "Adaboost" : AdaBoostClassifier(n_estimators=100, random_state=9, algorithm='SAMME.R', learning_rate=0.8),
         "Extra_T" : ExtraTreesClassifier(n_estimators=100, max_features=3),
         "R_forest" : RandomForestClassifier(max_samples=0.9, n_estimators=100, max_features=3),
-        # "XGB" : xgb.XGBClassifier(max_depth=3, n_estimators=300, learning_rate=0.05)
+        "XGB" : xgb.XGBClassifier(max_depth=3, n_estimators=300, learning_rate=0.05)
         }
     return Models
  
