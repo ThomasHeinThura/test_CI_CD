@@ -1,0 +1,29 @@
+# orignal dataset
+raw_data_config:
+  raw_data_csv: ../../data/raw/creditcard.csv
+
+# clean dataset
+clean_data_config: 
+  clean_data_csv: ../../data/clean/clean_creditcard.parquet
+
+# sampling dataset
+# oversampling and undersampling
+sampling_data_config:
+  oversampling_data_csv: ../../data/sampling/oversampling.parquet
+  undersampling_data_csv: ../../data/sampling/undersampling.parquet
+
+
+# Train_test processing data
+processed_data_config:
+  oversampling_train_data_csv: ../../data/processed/oversampling_train.parquet
+  oversampling_test_data_csv:  ../../data/processed/oversampling_test.parquet
+  oversampling_new_data_csv: ../../data/processed/oversampling_new_data.parquet
+  undersampling_train_data_csv: ../../data/processed/undersampling_train.parquet
+  undersampling_test_data_csv:  ../../data/processed/undersampling_test.parquet
+
+train_test_config:
+  train_test_split_ratio: 0.2
+  random_state: 125
+  target: Class
+
+

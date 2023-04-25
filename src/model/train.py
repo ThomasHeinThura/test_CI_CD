@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 import sys
 # caution: path[0] is reserved for script path (or '' in REPL)
 sys.path.append("src/data/")
+sys.path.append("../data/")
 from data_function import get_feat_and_target
 from params_loader import read_params
 from models import build_and_load_models
@@ -89,31 +90,32 @@ def train_and_evaluate(config_path, sampling):
     target = config["train_test_config"]["target"]
     
     check_dataset_exist(config_path)
-        
+    
     if sampling == 'undersampling': 
         train_data_path = undersampling_train_data_path
         test_data_path = undersampling_test_data_path
-        mlflow.log_param("Sampling" , "Undersampling Dataset")
-    
+        
     if sampling == 'oversampling':
         train_data_path = oversampling_train_data_path
         test_data_path = oversampling_test_data_path
-        mlflow.log_param("Sampling" , "Oversampling Dataset")
 
-    
     train_features, train_label, test_features, test_label = features_labels_split(train_data_path, 
                                                                                 test_data_path, 
                                                                                 target)
     
-    ################### MLFLOW ###############################  
+     
     Models = build_and_load_models()  
-    i = 1
+    counter = 1
     for Model_Name, classifier in Models.items(): 
-        with mlflow.start_run(nested=True):
-            print(f"{i}. {Model_Name}")
+        # with mlflow.start_run(nested=True):
+        print(f"{counter}. {Model_Name}")
+        
+        with mlflow.start_run():
             # fit the model
             classifier.fit(train_features, train_label)
-            i = i+1
+            
+            counter = counter + 1
+            
             # Calculate the metrics
             base_score,accuracy,precision,recall,f1score,matrix_scores = eval_metrics(classifier,
                                                                                     test_features,
@@ -128,15 +130,20 @@ def train_and_evaluate(config_path, sampling):
             mlflow.log_metric("recall"         , recall)
             mlflow.log_metric("f1"             , f1score)
             mlflow.log_params(matrix_scores)
-        print("________________________________________")
+            print("________________________________________")
 
 
  
 if __name__=="__main__":
     args = argparse.ArgumentParser()
-    args.add_argument("--config", default="../../model_params.yaml")
+    args.add_argument("--config", default="model_params.yaml")
+    args.add_argument("--sampling",
+                    default='undersampling',
+                    help='select sampling dataset')
+    
     parsed_args = args.parse_args()
-    train_and_evaluate(config_path=parsed_args.config)
+    train_and_evaluate(config_path = parsed_args.config,
+                       sampling = parsed_args.sampling)
 
 
 
