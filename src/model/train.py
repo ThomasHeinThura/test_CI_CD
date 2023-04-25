@@ -20,16 +20,19 @@ logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
 import sys
-# caution: path[0] is reserved for script path (or '' in REPL)
 sys.path.append("src/data/")
 sys.path.append("../data/")
 from data_function import get_feat_and_target
 from params_loader import read_params
 from models import build_and_load_models
 from check_data_exist import check_dataset_exist
+
 import warnings
 warnings.filterwarnings("ignore")
 np.random.seed(40)
+from mlflow import MlflowClient
+from mlflow.entities import ViewType
+from mlflow.models.signature import infer_signature
 
 
 def eval_metrics(classifier, test_features, test_labels, avg_method):
@@ -130,6 +133,14 @@ def train_and_evaluate(config_path, sampling):
             mlflow.log_metric("recall"         , recall)
             mlflow.log_metric("f1"             , f1score)
             mlflow.log_params(matrix_scores)
+            
+            signature = infer_signature(test_features, classifier.predict(test_features))
+            if f1score > 0.945 :
+                mlflow.sklearn.log_model(classifier,Model_Name, signature=signature)
+                print(f"f1 socre is more than 0.945 so the {Model_Name} is saved")
+            else :
+                print(f"Because f1 socre is not quality. The model is skip to saving phase.")
+            
             print("________________________________________")
 
 
@@ -144,10 +155,3 @@ if __name__=="__main__":
     parsed_args = args.parse_args()
     train_and_evaluate(config_path = parsed_args.config,
                        sampling = parsed_args.sampling)
-
-
-
-
-
-
-
