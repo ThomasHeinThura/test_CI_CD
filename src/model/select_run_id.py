@@ -56,7 +56,7 @@ def predict_save_model(config_path, sampling):
         loaded_model = mlflow.pyfunc.load_model(logged_model)
 
         # Predict on a Pandas DataFrame.
-        print("Tesing the saving models")
+        print("Testing the saving models")
         predict = loaded_model.predict(test_features)
         # print(f'{model} prediciton is \n {predict}  \n '
     
