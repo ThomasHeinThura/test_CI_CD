@@ -15,5 +15,10 @@ The project contains 18 `scikit learn` models. you can check all models in [`src
 
 The CD pipeline start with configuration with GitHub action and 
 1. retesting the model with more data. 
-2. monitoring the model with `EvidentlyAI` and `Grafana` for model degeneration, data degeneration, data drifting and furthermore. 
+2. monitoring the model with `EvidentlyAI` and `Grafana` with `docker`for model degeneration, data degeneration, data drifting and furthermore. 
 3. Then the whole process is updated to the server or docker for further use age. 
+
+Further more adding. 
+* want to store data train and testing plots to mlflow database.
+* want to upload to the website and build the website. 
+* Write unit testing and automatic check for code quality.
