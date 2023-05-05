@@ -8,17 +8,15 @@ The project contains 18 `scikit learn` models. you can check all models in [`src
 3. The clean data go through oversampling with `SMOTE` and undersampling with `NearMiss` and then, prepare for training and testing the data.
 4. After preprocessing the data, then model training start.
 5. The training model results are viewed with `MLflow`. To check the result just simply type `mlflow ui`.
-6. The training process is checked with the `prefect`. 
-7. If the test matrices score f1 is more than 0.945, then the models are automatically saved with run id in `mlartifacts` folder. 
-8. Then the save models are loaded with run_id for further staging like registering and testing stage or production deployment stage.
-
-
-The CD pipeline start with configuration with GitHub action and 
-1. retesting the model with more data. 
-2. monitoring the model with `EvidentlyAI` and `Grafana` with `docker`for model degeneration, data degeneration, data drifting and furthermore. 
-3. Then the whole process is updated to the server or docker for further use age. 
+6. If the test matrices score f1 is more than 0.945, then the models are automatically saved with run id in `mlartifacts` folder. 
+7. Then the save models are loaded with run_id for further staging like registering and testing stage or production deployment stage.
 
 Further more adding. 
 * want to store data train and testing plots to mlflow database.
 * want to upload to the website and build the website. 
 * Write unit testing and automatic check for code quality.
+* The training process is checked with the `prefect`. 
+* The CD pipeline start with configuration with GitHub action and 
+1. retesting the model with more data. 
+2. monitoring the model with `EvidentlyAI` and `Grafana` with `docker`for model degeneration, data degeneration, data drifting and furthermore. 
+3. Then the whole process is updated to the server or docker for further use age. 
